@@ -15,12 +15,28 @@ const TRANSLATABLE_ATTRIBUTES = ['placeholder', 'title', 'aria-label', 'aria-pla
 
 const trackedTextNodes = new Map<Text, string>();
 const trackedAttributes = new Map<HTMLElement, Map<string, string>>();
-const translatedValues = new Set<string>();
 let domTranslationTimer: ReturnType<typeof setTimeout> | undefined;
 let domTranslationInFlight: Promise<void> | undefined;
 
 function isSupportedLanguage(value: string | null): value is Language {
-  return value === 'en' || value === 'hi' || value === 'as' || value === 'bn' || value === 'ne';
+  return (
+    value === 'en' ||
+    value === 'as' ||
+    value === 'bn' ||
+    value === 'bho' ||
+    value === 'gu' ||
+    value === 'hi' ||
+    value === 'kok' ||
+    value === 'mai' ||
+    value === 'ml' ||
+    value === 'mr' ||
+    value === 'ne' ||
+    value === 'pa' ||
+    value === 'sa' ||
+    value === 'ta' ||
+    value === 'te' ||
+    value === 'ur'
+  );
 }
 
 function containsSourceText(value: string): boolean {
@@ -103,21 +119,19 @@ async function translateDom(targetLang: Language) {
     return;
   }
 
-  const textSources = sources.textNodes.map((item) => item.source).filter((source) => !translatedValues.has(source));
-  const attributeSources = sources.attributes.map((item) => item.source).filter((source) => !translatedValues.has(source));
+  const textSources = sources.textNodes.map((item) => item.source);
+  const attributeSources = sources.attributes.map((item) => item.source);
   const translated = await requestTranslations([...textSources, ...attributeSources], targetLang);
 
   sources.textNodes.forEach(({ node, source }) => {
     const value = translated[source];
     if (typeof value === 'string' && value && node.isConnected) {
-      translatedValues.add(value);
       node.nodeValue = value;
     }
   });
   sources.attributes.forEach(({ element, attribute, source }) => {
     const value = translated[source];
     if (typeof value === 'string' && value && element.isConnected) {
-      translatedValues.add(value);
       element.setAttribute(attribute, value);
     }
   });
@@ -146,12 +160,10 @@ async function translateDictionary(targetLang: Exclude<Language, 'en'>): Promise
   Object.entries(ENGLISH).forEach(([key, value]) => {
     if (typeof value === 'string') {
       const nextValue = translated[value] || value;
-      translatedValues.add(nextValue);
       (result as any)[key] = nextValue;
     } else {
       (result as any)[key] = value.map((item: string) => {
         const nextValue = translated[item] || item;
-        translatedValues.add(nextValue);
         return nextValue;
       });
     }

@@ -1,14 +1,25 @@
 import fs from 'fs';
 import path from 'path';
-import { supportedLanguages } from '../src/i18n/translations.js';
 
-export const DEEPL_TARGETS = Object.fromEntries(
-  supportedLanguages
-    .filter(({ code }) => code !== 'en')
-    .map(({ code }) => [code, code.toUpperCase()]),
-) as Record<string, string>;
+export const DEEPL_TARGETS = {
+  as: 'AS',
+  bn: 'BN',
+  bho: 'BHO',
+  gu: 'GU',
+  hi: 'HI',
+  kok: 'GOM',
+  mai: 'MAI',
+  ml: 'ML',
+  mr: 'MR',
+  ne: 'NE',
+  pa: 'PA',
+  sa: 'SA',
+  ta: 'TA',
+  te: 'TE',
+  ur: 'UR',
+} as const;
 
-export type DeepLTarget = string;
+export type DeepLTarget = keyof typeof DEEPL_TARGETS;
 
 const CACHE_FILE = path.resolve('data/translation-cache.json');
 const DEFAULT_DEEPL_URL = 'https://api-free.deepl.com/v2/translate';
