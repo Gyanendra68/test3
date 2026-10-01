@@ -7,6 +7,7 @@ import { User, StudentProfile, ApplicationStatus, SchemeCode } from '../src/type
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { isSupportedTarget, translateTexts } from './translation.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'tribal-scholar-gov-india-secret-key-2026';
 
@@ -56,6 +57,25 @@ export function authMiddleware(req: AuthenticatedRequest, res: Response, next: N
     res.status(401).json({ error: 'Unauthorized: Invalid or expired session' });
   }
 }
+
+// -------------------------------------------------------------
+// TRANSLATION ROUTES
+// -------------------------------------------------------------
+apiRouter.post('/translate/batch', async (req: Request, res: Response) => {
+  const { texts, targetLang } = req.body || {};
+  if (!Array.isArray(texts) || texts.length > 500 || !isSupportedTarget(targetLang)) {
+    res.status(400).json({ error: 'A texts array (up to 500 items) and a supported targetLang are required.' });
+    return;
+  }
+
+  try {
+    const translations = await translateTexts(texts, targetLang);
+    res.json({ translations, targetLang });
+  } catch (error) {
+    console.error('[Translation] Batch endpoint failed:', error instanceof Error ? error.message : error);
+    res.status(200).json({ translations: {}, targetLang, degraded: true });
+  }
+});
 
 // -------------------------------------------------------------
 // 1. AUTHENTICATION ROUTES
@@ -1712,4 +1732,3 @@ apiRouter.get('/export-zip', (_req, res) => {
     res.status(404).json({ error: 'ZIP file not found' });
   }
 });
-
