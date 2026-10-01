@@ -1,4 +1,4 @@
-export type Language = 'en' | 'hi' | 'as' | 'bn' | 'ne';
+export type Language = string;
 
 export interface LanguageMeta {
   code: Language;
@@ -6,12 +6,24 @@ export interface LanguageMeta {
   nativeName: string;
 }
 
+// Indian languages currently listed as DeepL API translation targets.
 export const supportedLanguages: LanguageMeta[] = [
   { code: 'en', name: 'English', nativeName: 'English' },
-  { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी' },
   { code: 'as', name: 'Assamese', nativeName: 'অসমীয়া' },
   { code: 'bn', name: 'Bengali', nativeName: 'বাংলা' },
+  { code: 'bho', name: 'Bhojpuri', nativeName: 'भोजपुरी' },
+  { code: 'gom', name: 'Konkani', nativeName: 'कोंकणी' },
+  { code: 'gu', name: 'Gujarati', nativeName: 'ગુજરાતી' },
+  { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी' },
+  { code: 'mai', name: 'Maithili', nativeName: 'मैथिली' },
+  { code: 'ml', name: 'Malayalam', nativeName: 'മലയാളം' },
+  { code: 'mr', name: 'Marathi', nativeName: 'मराठी' },
   { code: 'ne', name: 'Nepali', nativeName: 'नेपाली' },
+  { code: 'pa', name: 'Punjabi', nativeName: 'ਪੰਜਾਬੀ' },
+  { code: 'sa', name: 'Sanskrit', nativeName: 'संस्कृतम्' },
+  { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்' },
+  { code: 'te', name: 'Telugu', nativeName: 'తెలుగు' },
+  { code: 'ur', name: 'Urdu', nativeName: 'اردو' },
 ];
 
 export interface TranslationDictionary {
